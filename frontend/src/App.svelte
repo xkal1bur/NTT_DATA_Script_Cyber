@@ -1,30 +1,15 @@
+<!-- App.svelte -->
 <script>
-	export let name;
+  import First from './components/First.svelte';
+  import Log from './components/Log.svelte';
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
+<div>
+  <h1>App.svelte</h1>
+  <First /> <!-- Llama al componente First.svelte -->
+  <Log />
+</div>
 
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  /* Estilos para App.svelte */
 </style>
