@@ -17,8 +17,9 @@
     <img id="containerLog" class="logo" src="loading.png" alt="Imagen">
 </div>
 
-<div class="button1" on:click={register}>Register</div>
-<div class="button2" on:click={login}>Login</div>
+<div class="button1" onclick="window.location='/register'">Register</div>
+<button class="button2" onclick="window.location='/login'">Login</button>
+
 
 <style>
 
