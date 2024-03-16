@@ -53,12 +53,13 @@ def creation_call(lista):
     completion = client_ai.chat.completions.create(
         model="gpt-3.5-turbo",
           messages=[
-            {"role": "system", "content": "Te voy a pasar el first_name, last_name, job_title y industriousness. Vas a escribir una descripción de un párrafo para promocionar al trabajador basandote en los datos que te di y en indicador entre 0 y 1 de industriousness."},
+            {"role": "system", "content": "Te voy a pasar el first_name, last_name, job_title y industriousness. Vas a escribir una descripción de un párrafo para promocionar al trabajador basandote en los datos que te di y en indicador entre 0 y 1 de industriousness. Tómalo como un porcentaje, si es menos de 50 es peor para el trabajo. Menciona el industriousness en porcentaje."},
             {"role": "user", "content": f"first_name: {lista[0]}, last_name: {lista[1]}, job_title: {lista[2]}, industriousness: {lista[3]}"}
         ]
     )
 
-    descripcion = completion.choices[0].message
+    descripcion = completion.choices[0].message.content
+    print(descripcion)
 
     return descripcion
 
@@ -126,7 +127,7 @@ def create_worker():
 
         worker.calculate_ind_score()
 
-        #worker.generate_description()
+        worker.generate_description()
 
         db.session.add(worker)
         db.session.commit()
