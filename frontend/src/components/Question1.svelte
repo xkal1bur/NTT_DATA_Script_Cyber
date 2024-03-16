@@ -50,7 +50,32 @@
     // Función para continuar
     function finish() {
         // Aquí puedes agregar la lógica para guardar las respuestas o pasar a la siguiente pregunta
-        //console.log("Respuestas guardadas:", selectedOptions);
+        // console.log("Respuestas guardadas:", selectedOptions);
+        let data_enviar = {};
+        data_enviar["industriousness"] = selectedOptions;
+        data_enviar["first_name"] = "Oscar"
+        data_enviar["last_name"] = "Gonzalez"
+        data_enviar["job_title"] = "Pintor"
+
+        let json_data = JSON.stringify(data_enviar);
+
+        console.log(json_data)
+        fetch('http://localhost:5000/worker', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: json_data
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Error en la petición');
+        }).then(data => {
+            console.log(data);
+        }).catch(error => {
+            console.error('Error:', error);
+        });
         navigate("/register_50");
     }
 </script>
@@ -72,7 +97,7 @@
 
     {#if questionIndex !== questions.length - 1}
     <hr class="question-separator" />
-{/if}
+    {/if}
 {/each}
 
 {#if count == l}
