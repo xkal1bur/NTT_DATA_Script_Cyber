@@ -1,0 +1,36 @@
+
+<script>
+
+    import { navigate } from 'svelte-routing';
+
+    function finish(){
+        navigate("/register_50")
+    }
+</script>
+
+<div class = "question">
+    <h1>Pregunta 1</h1>
+</div>
+  
+
+
+<button class="button" on:click={finish}>Continue</button>
+
+<style>
+
+.button{
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    position: absolute;
+    top: 80%;
+    left:90%;
+}
+
+
+</style>

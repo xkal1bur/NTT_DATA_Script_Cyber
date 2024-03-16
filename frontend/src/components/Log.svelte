@@ -1,25 +1,35 @@
 <script>
+    import { navigate } from 'svelte-routing';
     export let option = 'none';
     function login(){
         option = 'login';
         console.log(option);
+        navigate("/login")
     }
 
     function register(){
         option = 'register';
         console.log(option);
+        navigate("/register_0")
     }
 
 </script>
+
+
+
 
 <div class="all">
     <h1 id="containerParent">MiChamba</h1>
     <img id="containerLog" class="logo" src="loading.png" alt="Imagen">
 </div>
 
+<button class="button1" on:click={register}>Register</button>
+<button class="button2" on:click={login}>Login</button>
+
+<!--
 <div class="button1" onclick="window.location='/register'">Register</div>
 <button class="button2" onclick="window.location='/login'">Login</button>
-
+-->
 
 <style>
 
