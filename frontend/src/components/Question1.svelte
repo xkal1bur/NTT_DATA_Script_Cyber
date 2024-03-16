@@ -92,6 +92,7 @@
     {#if questionIndex !== questions.length - 1}
     <hr class="question-separator" />
     {/if}
+
     {/each}
 </div>
 

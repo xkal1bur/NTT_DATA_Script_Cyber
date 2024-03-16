@@ -10,6 +10,10 @@ from datetime import datetime
 import uuid
 import os
 from openai import OpenAI
+from dotenv import load_dotenv
+from flask_cors import CORS
+
+load_dotenv()
 
 client_ai = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY")
@@ -20,6 +24,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@localhost:5432/ntt_data'
 app.config['UPLOAD_FOLDER'] = 'static/employees'
 db = SQLAlchemy(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 ALLOW_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 ind_coef = [.59, -.60, -.56, -.55, .52, -.54, .49, .49, -.53, -.52] # industriousness
@@ -48,12 +53,13 @@ def creation_call(lista):
     completion = client_ai.chat.completions.create(
         model="gpt-3.5-turbo",
           messages=[
-            {"role": "system", "content": "Te voy a pasar el first_name, last_name, job_title y industriousness. Vas a escribir una descripción de un párrafo para promocionar al trabajador basandote en los datos que te di y en indicador entre 0 y 1 de industriousness."},
+            {"role": "system", "content": "Te voy a pasar el first_name, last_name, job_title y industriousness. Vas a escribir una descripción de un párrafo para promocionar al trabajador basandote en los datos que te di y en indicador entre 0 y 1 de industriousness. Tómalo como un porcentaje, si es menos de 50 es peor para el trabajo. Menciona el industriousness en porcentaje."},
             {"role": "user", "content": f"first_name: {lista[0]}, last_name: {lista[1]}, job_title: {lista[2]}, industriousness: {lista[3]}"}
         ]
     )
 
-    descripcion = completion.choices[0].message
+    descripcion = completion.choices[0].message.content
+    print(descripcion)
 
     return descripcion
 
@@ -109,10 +115,15 @@ def create_worker():
         first_name = request.json.get('first_name')
         last_name = request.json.get('last_name')
         job_title = request.json.get('job_title')
-        industriousness = request.json.get('industriousness')
+        industriousness_all = request.json.get('industriousness')
+        ind = {}
+        for i in range(10):
+            ind[i] = int(industriousness_all[i]['option'])
+        print(ind)
 
 
-        worker = Worker(first_name, last_name, job_title, industriousness)
+
+        worker = Worker(first_name, last_name, job_title, ind)
 
         worker.calculate_ind_score()
 
@@ -136,6 +147,6 @@ def get_worker_by_id(id):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        app.run(debug=True, port=5006)
+        app.run(debug=True, port=5000)
 else:
     print('Importing {}'.format(__name__))
