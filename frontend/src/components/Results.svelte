@@ -5,9 +5,9 @@
     // Define los datos del usuario
     let user = {
         name: 'Antonio',
+        last_name: 'Gonzalez',
         age: 50,
         origin: 'Huancayo',
-        description: 'Antonio es un líder excepcional, destacándose por su habilidad para organizar equipos, motivar a otros y tomar decisiones estratégicas. Es perseverante ante los desafíos y posee un pensamiento crítico agudo, lo que le permite encontrar soluciones innovadoras y promover el cambio positivo en su entorno.'
     };
 
     // Datos de habilidades del usuario
@@ -29,6 +29,25 @@
     onMount(() => {
         console.log('El componente se ha cargado correctamente.');
     });
+
+
+    function recibir_data(){
+        fetch('http://localhost:5000/worker/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Error en la petición');
+        }).then(data => {
+            console.log(data);
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
 </script>
 
 <div class="header">
@@ -39,7 +58,7 @@
 <div class="profile-container">
     <img src="user1.jpg" alt="Foto de perfil" class="profile-image" style="width: 200px; height: 200px;">
     <div class="user-details">
-        <h3>{user.name}</h3>
+        <h3>{user.name} {user.last_name}</h3>
         <p>Edad: {user.age}</p>
         <p>Procedencia: {user.origin}</p>
         <p>{user.description}</p>

@@ -40,9 +40,9 @@
         // console.log("Respuestas guardadas:", selectedOptions);
         let data_enviar = {};
         data_enviar["industriousness"] = selectedOptions;
-        data_enviar["first_name"] = "Oscar"
+        data_enviar["first_name"] = "Antonio"
         data_enviar["last_name"] = "Gonzalez"
-        data_enviar["job_title"] = "Pintor"
+        data_enviar["job_title"] = "Carpintero"
 
         let json_data = JSON.stringify(data_enviar);
 
