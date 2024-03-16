@@ -1,5 +1,6 @@
 <div>
-    <img class="logo" src="img/images.png" alt="Imagen">
+    <img class="logo" src="loading.png" alt="Imagen">
+    
 </div>
 
 <style>
