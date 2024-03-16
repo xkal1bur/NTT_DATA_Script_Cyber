@@ -9,10 +9,15 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import uuid
 import os
+from openai import OpenAI
+
+client_ai = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY")
+)
 
 # Configuración
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@localhost:5432/questions'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@localhost:5432/ntt_data'
 app.config['UPLOAD_FOLDER'] = 'static/employees'
 db = SQLAlchemy(app)
 ALLOW_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -36,6 +41,23 @@ industriousness_questions = [
 """
 # Ejemplo de alguien máximo en industriousness
 # [5,1,1,1,5,1,5,5,1,1]
+
+
+# lista = [first_name, last_name, job_title, industriousness]
+def creation_call(lista):
+    completion = client_ai.chat.completions.create(
+        model="gpt-3.5-turbo",
+          messages=[
+            {"role": "system", "content": "Te voy a pasar el first_name, last_name, job_title y industriousness. Vas a escribir una descripción de un párrafo para promocionar al trabajador basandote en los datos que te di y en indicador entre 0 y 1 de industriousness."},
+            {"role": "user", "content": f"first_name: {lista[0]}, last_name: {lista[1]}, job_title: {lista[2]}, industriousness: {lista[3]}"}
+        ]
+    )
+
+    descripcion = completion.choices[0].message
+
+    return descripcion
+
+
 
 
 # Modelos
@@ -68,6 +90,12 @@ class Worker(db.Model):
             self.ind_score = (score_sum - ind_min_max[0]) / (ind_min_max[1] - ind_min_max[0])
         else:
             self.ind_score = None
+    
+    def generate_description(self):
+        if self.ind_score:
+            self.description = creation_call([self.first_name, self.last_name, self.job_title, self.ind_score])
+        else:
+            self.description = None
 
 @app.route('/worker', methods=['GET'])
 def get_worker():
@@ -88,6 +116,8 @@ def create_worker():
 
         worker.calculate_ind_score()
 
+        worker.generate_description()
+
         db.session.add(worker)
         db.session.commit()
         
@@ -96,10 +126,11 @@ def create_worker():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 400
 
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOW_EXTENSIONS
 
+@app.route('/worker/<id>', methods=['GET'])
+def get_worker_by_id(id):
+    worker = Worker.query.get(id)
+    return jsonify(worker.__dict__)
 
 # Start server
 if __name__ == '__main__':
